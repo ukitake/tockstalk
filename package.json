@@ -1,5 +1,6 @@
 {
   "name": "tockstalk",
+  "licence": "GPL-3.0",
   "version": "1.0.0",
   "description": "A tock reserving bot",
   "scripts": {
