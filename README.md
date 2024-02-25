@@ -1,14 +1,12 @@
 # tockstalk
 
-A [Cypress](https://docs.cypress.io/guides/overview/why-cypress) bot to book restaurants on [Tock](exploretock.com) and report attempts to [Slack](https://slack.com).
+A [Cypress](https://docs.cypress.io/guides/overview/why-cypress) bot to book restaurants on [Tock](exploretock.com) and optionally report attempts to [Slack](https://slack.com).
 
 ![image](https://user-images.githubusercontent.com/160452/228733212-c30c234a-ee89-4167-8b30-b7a2edac4c91.png)
 
 ## Prerequisites
 
-Ensure your computer has `node` and `npm` installed. You can use [nodenv](https://github.com/nodenv/nodenv#installation) if you don't. Once installed,
-use `npm install` to pull down the dependencies for the project. Before you can run the bot, you'll also need to configure it. Read on to the next section for
-how to do that.
+Ensure your computer has `node` and `npm` installed. You can use [nodenv](https://github.com/nodenv/nodenv#installation) if you don't. Once installed, use `npm install` to pull down the dependencies for the project. Before you can run the bot, you'll also need to configure it. Read on to the next section for how to do that.
 
 ## Configuration
 
@@ -27,9 +25,7 @@ Next go find the restaurant you'd like to book, and grab the path for the bookin
 Last but not least, create [an incoming webhook](https://api.slack.com/incoming-webhooks) for your Slack account. This will send notifications 
 from the cypress run to the slack room of your choice.
 
-With all this in-hand, you can create your configuration file. There's [an example](./cypress.env.example.json) in the repo you can start with, 
-though you'll need to create a real one named `cypress.env.json` in the project root. Using the example information we just took down, let's
-create one:
+With all this in-hand, you can create your configuration file. There's [an example](./cypress.env.example.json) in the repo you can start with, though you'll need to create a real one named `cypress.env.json` in the project root. Using the example information we just took down, let's create one:
 
 ```js
 echo '
@@ -49,13 +45,11 @@ echo '
 ' > cypress.env.json
 ```
 
-The fields are all pretty self explanatory, though you can use `dryRun` to avoid actually booking if you just want to test the whole thing out.
+The fields are all pretty self explanatory, though you can use `dryRun` to avoid actually booking if you just want to test the whole thing out. The only optional fields are those related to `slack*`, which you can omit if you don't want to send notifications to slack.
 
 ## Scheduling
 
 ![image](https://user-images.githubusercontent.com/160452/228456115-a510e933-29be-4c65-aad9-bf01aab9a213.png)
 
 A lot of restaurants set their next month's schedule on a particular day and time. You can use github actions to 
-[schedule jobs on a cron](https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows#schedule) and try to snag a spot as things
-open up. The [example in this repo](.github/workflows/schedule.yml) attempts bookings every 15 minutes. You can fork the repo and try it out yourself. 
-Just be sure to set a secret `CYPRESS_ENV` with the above JSON so that the action will run.
+[schedule jobs on a cron](https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows#schedule) and try to snag a spot as things open up. The [example in this repo](.github/workflows/schedule.yml) attempts bookings every 15 minutes. You can fork the repo and try it out yourself. Just be sure to set a secret `CYPRESS_ENV` with the above JSON so that the action will run.
