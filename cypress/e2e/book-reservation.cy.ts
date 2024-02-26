@@ -103,28 +103,7 @@ describe('book reservation', () => {
 
 	function visit() {
 		const redirect = encodeURIComponent(`${reservation.bookingPage}?size=${reservation.partySize}`)
-		cy.visit(`https://www.exploretock.com/login?continue=${redirect}`, { 
-			failOnStatusCode: false 
-		}).then((window) => {
-			if (window.document.title === 'Just a moment...')
-				return bypassCloudflareTurnstile(window)
-		})
-	}
-
-	function bypassCloudflareTurnstile(top: Window) {
-		cy.log(':cloud: bypassing cloudflare turnstile...')
-		return cy.waitUntil(() => {
-			const iframe = top.frames[0]
-			if (iframe && iframe._cf_chl_opt && iframe._cf_chl_opt.chlApiSitekey)
-				return { top, iframe }
-		}).then(({ top, iframe }) => {
-			return cy.request('POST', 'https://api.nopecha.com/token/', {
-				key: Cypress.env('nopechaKey'),
-				type: 'turnstile',
-				siteKey: iframe._cf_chl_opt.chlApiSitekey,
-				url: top.location.href,
-			})
-		})
+		cy.visit(`https://www.exploretock.com/login?continue=${redirect}`)
 	}
 
 	function fillFormFields(timeSlot:HTMLElement) {
