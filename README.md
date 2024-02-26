@@ -22,28 +22,13 @@ Next go find the restaurant you'd like to book, and grab the path for the bookin
 /otiumgrillandgreens/experience/330688/reservation
 ```
 
-Last but not least, create [an incoming webhook](https://api.slack.com/incoming-webhooks) for your Slack account. This will send notifications 
-from the cypress run to the slack room of your choice.
+Last but not least, if you want to use Slack, create [an incoming webhook](https://api.slack.com/incoming-webhooks) for your Slack account. This will be the endpoint the runner uses to send notifications to the slack room of your choice.
 
-With all this in-hand, you can create your configuration file. There's [an example](./cypress.env.example.json) in the repo you can start with, though you'll need to create a real one named `cypress.env.json` in the project root. Using the example information we just took down, let's create one:
+With all this in-hand, you can create your configuration file. There's [an example](./cypress.env.example.json) in the repo you can start with, though you'll need to create a real one named `cypress.env.json` in the project root:
 
-```js
-echo '
-{
-	"email": "{{ the email address used for Tock }}",
-	"password": "{{ the password used for Tock }}",
-	"cvv": {{ the CVV code for the card saved on Tock }},
-	"trustee": {{ true if you are in a place that requires Trustee, like Europe }},
-	"bookingPage": "/otiumgrillandgreens/experience/330688/reservation",
-	"partySize": 4,
-	"desiredTimeSlots": [ "11:00 AM" ],
-	"excludedDays": [ "2023-03-29" ],
-	"slackWebhookUrl": "https://hooks.slack.com/services/00000000000/00000000000/00000000000000000000000",
-	"slackUsername": "Otium Grill and Greens",
-	"slackIconEmoji": ":meat_on_bone:",
-	"dryRun": true
-}
-' > cypress.env.json
+```sh
+cp cypress.env.example.json cypress.env.json
+open cypress.env.json
 ```
 
 The fields are all pretty self explanatory, though you can use `dryRun` to avoid actually booking if you just want to test the whole thing out. The only optional fields are those related to `slack*`, which you can omit if you don't want to send notifications to slack.
@@ -54,3 +39,9 @@ The fields are all pretty self explanatory, though you can use `dryRun` to avoid
 
 A lot of restaurants set their next month's schedule on a particular day and time. You can use github actions to 
 [schedule jobs on a cron](https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows#schedule) and try to snag a spot as things open up. The [example in this repo](.github/workflows/schedule.yml) attempts bookings every 15 minutes. You can fork the repo and try it out yourself. Just be sure to set a secret `CYPRESS_ENV` with the above JSON so that the action will run.
+
+## Bot Detection
+
+Tock uses Cloudflare's bot detection system, [Turnstile](https://www.cloudflare.com/products/turnstile/), to prevent automated access to their site. Thankfully, Cypress is pretty good about presenting itself as a human. The only times it runs into issues is when Cypress runs in "studio" mode, which unfortunately is the default mode for developers using Cypress (i.e. `cypress open`). 
+
+The underlying issue is that Cypress studio runs its end to end tests in an iframe, which Turnstile immediately flags as a bot. To avoid this, the bot is set up to run in a frameless mode (i.e. `cypress run`), but can still run in "headed" mode for local development. In the end, this change to the normal working style of Cypress is a small price to pay for the convenience of automated booking.
