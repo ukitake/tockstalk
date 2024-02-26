@@ -12,4 +12,19 @@ Cypress.Commands.overwrite('log', (originalFn, ...msgs) => {
 		})
 	return originalFn(...msgs);
 })
-	
+
+Cypress.Commands.add('waitUntil', (fn, options) => {
+	const { delay = 100, timeout = 4000 } = options || {}
+	const start = new Date().getTime()
+	const check = resolve => {
+		const output = fn()
+		if (output !== undefined) {
+			resolve(output)
+		} else if (new Date().getTime() - start > timeout) {
+			throw new Error(`cy.waitUntil timed out after ${timeout}ms`)
+		} else {
+			setTimeout(() => check(resolve), delay)
+		}
+	}
+	return new Cypress.Promise(resolve => check(resolve))
+})
