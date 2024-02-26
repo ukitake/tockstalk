@@ -46,6 +46,7 @@ describe('book reservation', () => {
 		cy.wrap(reservation.dryRun).should('be.a', 'boolean')
 		cy.wrap(reservation.desiredTimeSlots).should('be.a', 'array')
 		cy.wrap(reservation.excludedDays).should('be.a', 'array')
+
 	})
 
 	const tid = (id:string, eq:string = '=') => `[data-testid${eq}${id}]`
@@ -73,7 +74,7 @@ describe('book reservation', () => {
 	function findMatchingTimeSlot(days:Array<HTMLElement>) {
 		cy.wrap(days.length).should('be.greaterThan', 0) 
 		cy.wrap(days[0]).click()
-		return cy.get(tid('search-result-time')).then((results) => {
+		return cy.get(`${tid('search-result-time')} span`).then((results) => {
 			cy.log(`:crossed_fingers: checking ${results.length} slots on ${days[0].ariaLabel} for a match...`)
 			const matchedPreferences = results
 				.filter((i, el) => 
@@ -128,11 +129,11 @@ describe('book reservation', () => {
 	function submitBooking() {
 		cy.log(':handshake: booking reservation...')
 		if (reservation.dryRun) {
-			return cy.wrap('Dry Run (no reservation booked)')
+			return cy.wrap('not booked, dry run mode enabled...')
 		} else {		
 			cy.get('[data-testid="submit-purchase-button"]').click()
 			return cy.get('.Receipt-container--header p', { timeout: 10000 }).then(p => {
-				return cy.wrap(p.text())
+				return cy.wrap(`booked! ${p.text()}`)
 			})
 		}
 	}
@@ -142,7 +143,7 @@ describe('book reservation', () => {
 	after(() => {
 		if (confirmation) cy.log({
 			color: 'good',
-			text: `:calendar: <!channel> booked! ${confirmation}`
+			text: `:calendar: <!channel> ${confirmation}`
 		} as unknown as string)
 		else cy.log({
 			color: 'danger',

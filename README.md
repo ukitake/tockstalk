@@ -34,7 +34,6 @@ echo '
 	"password": "{{ the password used for Tock }}",
 	"cvv": {{ the CVV code for the card saved on Tock }},
 	"trustee": {{ true if you are in a place that requires Trustee, like Europe }},
-	"nopechaKey": "{{ the nopecha key for the bypassing cloudflare }}",
 	"bookingPage": "/otiumgrillandgreens/experience/330688/reservation",
 	"partySize": 4,
 	"desiredTimeSlots": [ "11:00 AM" ],
