@@ -3,7 +3,7 @@
   "version": "1.1.0",
   "description": "A tock reserving bot",
   "scripts": {
-    "start": "cypress run --headed --no-exit --e2e",
+    "start": "cypress run --e2e",
     "test": "CYPRESS_NO_COMMAND_LOG=1 cypress run --e2e"
   },
   "repository": {

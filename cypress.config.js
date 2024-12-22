@@ -6,7 +6,12 @@ module.exports = defineConfig({
   viewportHeight: 2048,
   e2e: {
     setupNodeEvents(on, config) {
-
+      on("task", {
+        log(args) {
+          console.log(...args);
+          return null;
+        },
+      });
     },
   },
 });
